@@ -77,7 +77,19 @@ class TestStellarBurgers:
         WebDriverWait(driver, 8).until(EC.url_contains("/account/profile"))
         assert "/account/profile" in driver.current_url
 
-    def test_navigation_from_account_to_constructor(self, driver, registered_user):
+    def test_navigation_from_account_to_constructor_by_button(self, driver, registered_user):
+        """Переход из личного кабинета в конструктор по клику на кнопку 'Конструктор'"""
+        driver.get(Urls.LOGIN_URL)
+        login(driver, registered_user["email"], registered_user["password"])
+        driver.find_element(*StellarBurgersLocators.PERSONAL_ACCOUNT_BUTTON).click()
+        WebDriverWait(driver, 8).until(EC.url_contains("/account/profile"))
+        driver.find_element(*StellarBurgersLocators.CONSTRUCTOR_BUTTON).click()
+        WebDriverWait(driver, 8).until(
+            EC.visibility_of_element_located(StellarBurgersLocators.CONSTRUCTOR_HEADER)
+        )
+        assert driver.current_url == Urls.BASE_URL + "/"
+
+    def test_navigation_from_account_to_constructor_by_logo(self, driver, registered_user):
         """Переход из личного кабинета в конструктор по клику на логотип"""
         driver.get(Urls.LOGIN_URL)
         login(driver, registered_user["email"], registered_user["password"])
